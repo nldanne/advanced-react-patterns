@@ -59,11 +59,21 @@ function useToggle({initialOn = false, reducer = toggleReducer} = {}) {
   }
 }
 
+// export {useToggle, toggleReducer}
+
+// import {useToggle, toggleRedcuer} from './use-toggle'
+
 function App() {
   const [timesClicked, setTimesClicked] = React.useState(0)
   const clickedTooMuch = timesClicked >= 4
 
   function toggleStateReducer(state, action) {
+    if (action.type === 'toggle' && clickedTooMuch) {
+      return {on: state.on}
+    }
+    return toggleReducer(state, action)
+    /*
+    // Previous implememntation
     switch (action.type) {
       case 'toggle': {
         if (clickedTooMuch) {
@@ -78,6 +88,7 @@ function App() {
         throw new Error(`Unsupported type: ${action.type}`)
       }
     }
+    */
   }
 
   const {on, getTogglerProps, getResetterProps} = useToggle({
