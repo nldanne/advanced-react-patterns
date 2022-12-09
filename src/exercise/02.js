@@ -15,8 +15,12 @@ function Toggle({children}) {
   // 📜 https://reactjs.org/docs/react-api.html#reactchildren
   // 📜 https://reactjs.org/docs/react-api.html#cloneelement
   return React.Children.map(children, child => {
-    const newChild = React.cloneElement(child, {on, toggle})
-    return newChild
+    // only render functional component if it's not a string
+    if (allowedTypes.includes(child.type)) {
+      const newChild = React.cloneElement(child, {on, toggle})
+      return newChild
+    }
+    return child
   })
   // return <Switch on={on} onClick={toggle} />
 }
@@ -32,6 +36,14 @@ const ToggleOff = ({on, children}) => (on ? null : children)
 // Accepts `on` and `toggle` props and returns the <Switch /> with those props.
 const ToggleButton = ({on, toggle}) => <Switch on={on} onClick={toggle} />
 
+// implicitly shared state with allowed types only
+const allowedTypes = [ToggleOn, ToggleOff, ToggleButton]
+
+// implicitly shared state
+function MyToggleButton({on, toggle}) {
+  return on ? 'the button is on hello' : 'the button is off noo'
+}
+
 function App() {
   return (
     <div>
@@ -39,6 +51,7 @@ function App() {
         <ToggleOn>The button is on</ToggleOn>
         <ToggleOff>The button is off</ToggleOff>
         <ToggleButton />
+        <MyToggleButton />
       </Toggle>
     </div>
   )
